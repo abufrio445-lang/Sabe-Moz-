@@ -1,0 +1,22 @@
+{
+  "name": "Qual a Sena MZ",
+  "short_name": "Sena MZ",
+  "description": "O quiz de cultura geral moçambicana. Criado por Tomocene Fernando Frio.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#007A4D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

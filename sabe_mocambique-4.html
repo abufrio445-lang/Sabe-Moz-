@@ -1,0 +1,1246 @@
+<!--
+  ⚠️ QUAL A SENA MZ ⚠️
+  © 2026 Tomocene Fernando Frio — Beira, Moçambique
+  Todos os direitos reservados.
+  Este código, design, perguntas e estrutura são propriedade
+  intelectual do autor. Qualquer cópia, reprodução, distribuição
+  ou uso não autorizado deste jogo, total ou parcial, é proibido
+  e pode ser passível de responsabilização legal.
+  Contacto: WhatsApp 83 528 5053
+-->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qual a Sena MZ</title>
+<meta name="description" content="O quiz de cultura geral moçambicana. Testa os teus conhecimentos sobre Moçambique!">
+<meta name="theme-color" content="#007A4D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Qual a Sena MZ">
+<meta property="og:title" content="Qual a Sena MZ">
+<meta property="og:description" content="O quiz de cultura geral moçambicana. Criado por Tomocene Fernando Frio.">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --verde: #007A4D;
+    --amarelo: #FFD700;
+    --preto: #0A0A0A;
+    --branco: #F8F6F0;
+    --cinza: #2A2A2A;
+    --cinza-claro: #3D3D3D;
+    --vermelho: #CC2B2B;
+    --sucesso: #00C853;
+    --erro: #FF3D3D;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--preto);
+    color: var(--branco);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ECRÃ INICIAL */
+  #inicio {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1rem 1.2rem;
+    padding-top: 1.5rem;
+    text-align: center;
+    background: radial-gradient(ellipse at top, #0d2b1a 0%, var(--preto) 70%);
+  }
+
+  .bandeira-strip {
+    display: flex;
+    width: 100%;
+    height: 6px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  }
+  .strip-verde { background: var(--verde); flex: 1; }
+  .strip-preto { background: #1a1a1a; flex: 1; }
+  .strip-amarelo { background: var(--amarelo); flex: 1; }
+
+  .logo-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-weight: 900;
+    color: var(--branco);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-titulo span { color: var(--amarelo); }
+
+  .logo-subtitulo {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+  }
+
+  .mapa-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 10px rgba(0,122,77,0.5));
+  }
+
+  .categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 2rem;
+  }
+
+  .cat-btn {
+    background: var(--cinza);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 0.7rem 0.4rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: var(--branco);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    line-height: 1.1;
+  }
+
+  .cat-btn .icon { font-size: 1.2rem; }
+  .cat-btn.todas { grid-column: span 3; }
+  .cat-btn:hover { border-color: var(--verde); background: #1a3a2a; transform: translateY(-2px); }
+  .cat-btn.selected { border-color: var(--amarelo); background: #2a2a00; }
+  .cat-btn.todas { border-color: var(--verde); background: #0d2b1a; }
+  .cat-btn.todas:hover, .cat-btn.todas.selected { background: var(--verde); color: var(--preto); }
+
+  .btn-comecar {
+    background: var(--verde);
+    color: var(--branco);
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-comecar:hover { background: #009960; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,122,77,0.4); }
+  .btn-comecar:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ECRÃ JOGO */
+  #jogo {
+    display: none;
+    min-height: 100vh;
+    padding: 1.5rem;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+  }
+
+  .hud-cat {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--verde);
+    font-weight: 600;
+  }
+
+  .hud-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--amarelo);
+  }
+
+  .hud-num {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .barra-progresso {
+    width: 100%;
+    height: 4px;
+    background: var(--cinza);
+    border-radius: 2px;
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+  }
+
+  .barra-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--verde), var(--amarelo));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .pergunta-categoria {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .pergunta-texto {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 2rem;
+    color: var(--branco);
+  }
+
+  .opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .opcao {
+    background: var(--cinza);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--branco);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .opcao-letra {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--cinza-claro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .opcao:hover:not(:disabled) { border-color: var(--verde); background: #1a3a2a; }
+  .opcao:hover:not(:disabled) .opcao-letra { background: var(--verde); }
+
+  .opcao.correcta { border-color: var(--sucesso); background: #003d1a; }
+  .opcao.correcta .opcao-letra { background: var(--sucesso); color: var(--preto); }
+
+  .opcao.errada { border-color: var(--erro); background: #3d0000; }
+  .opcao.errada .opcao-letra { background: var(--erro); }
+
+  .opcao:disabled { cursor: default; }
+
+  .feedback {
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+
+  .feedback.correcta { background: #003d1a; border: 1px solid var(--sucesso); color: #80ffb3; }
+  .feedback.errada { background: #3d0000; border: 1px solid var(--erro); color: #ffb3b3; }
+
+  .btn-proxima {
+    background: var(--verde);
+    color: var(--branco);
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+    display: none;
+    width: 100%;
+  }
+
+  .btn-proxima:hover { background: #009960; }
+
+  /* ECRÃ RESULTADO */
+  #resultado {
+    display: none;
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    background: radial-gradient(ellipse at top, #0d2b1a 0%, var(--preto) 70%);
+  }
+
+  .resultado-emoji { font-size: 4rem; margin-bottom: 1rem; }
+
+  .resultado-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+  }
+
+  .resultado-score {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 900;
+    color: var(--amarelo);
+    line-height: 1;
+    margin: 1rem 0;
+  }
+
+  .resultado-msg {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  .resultado-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    justify-content: center;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--branco);
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #666;
+  }
+
+  .btns-resultado {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-jogar-novamente {
+    background: var(--verde);
+    color: var(--branco);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-jogar-novamente:hover { background: #009960; }
+
+  .btn-menu {
+    background: transparent;
+    color: var(--branco);
+    border: 2px solid var(--cinza-claro);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .btn-menu:hover { border-color: var(--branco); }
+</style>
+</head>
+<body>
+
+<div class="bandeira-strip">
+  <div class="strip-verde"></div>
+  <div class="strip-preto"></div>
+  <div class="strip-amarelo"></div>
+</div>
+
+<!-- ECRÃ INICIAL -->
+<div id="inicio">
+  <div class="mapa-icon">🇲🇿</div>
+  <h1 class="logo-titulo">Qual a <span>Sena MZ</span></h1>
+  <p class="logo-subtitulo">O quiz da nossa terra</p>
+  <p style="font-size:0.7rem; color:#555; margin-bottom:0.6rem; letter-spacing:0.08em;">197 perguntas · 5 fases · 3 vidas</p>
+
+  <div style="text-align:center; width:100%; max-width:600px; margin-bottom:1rem; background:#111; border-radius:10px; padding:0.6rem;">
+    <a href="https://wa.me/258835285053" target="_blank" style="display:inline-block; background:#1a3a2a; border:1px solid #007A4D; color:#80ffb3; padding:0.4rem 0.9rem; border-radius:50px; font-size:0.65rem; text-decoration:none; letter-spacing:0.02em; margin:0.2rem;">
+      💬 Feedback: 83 528 5053
+    </a>
+    <span style="display:inline-block; background:#1a3a2a; border:1px solid #007A4D; color:#80ffb3; padding:0.4rem 0.9rem; border-radius:50px; font-size:0.65rem; letter-spacing:0.02em; margin:0.2rem;">
+      💚 E-Mola: 87 776 7831 (Raiva Evaristo Cossa)
+    </span>
+  </div>
+
+  <div id="fases-container" style="width:100%; max-width:600px; display:flex; flex-direction:column; gap:0.8rem;">
+
+    <button class="fase-btn" id="fase-1-btn" onclick="seleccionarFase(1)" style="background:#0d2b1a; border:2px solid #007A4D; border-radius:14px; padding:1rem 1.2rem; cursor:pointer; text-align:left; color:#F8F6F0; width:100%; font-family:'Inter',sans-serif;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="fase-titulo" style="font-size:0.7rem; letter-spacing:0.15em; color:#007A4D; text-transform:uppercase; font-weight:700;">Fase 1 · Vida do Bairro</div>
+          <div class="fase-subtitulo" style="font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-top:0.3rem;">Bairro · Escola · Chapa · Mães · Futebol</div>
+          <div style="font-size:0.65rem; color:#888; margin-top:0.2rem;">31 perguntas · precisa 80%</div>
+        </div>
+        <span class="lock-icon" style="font-size:1.4rem;">🔓</span>
+      </div>
+    </button>
+
+    <button class="fase-btn" id="fase-2-btn" onclick="seleccionarFase(2)" disabled style="background:#2a2a2a; border:2px solid #444; border-radius:14px; padding:1rem 1.2rem; cursor:not-allowed; text-align:left; color:#888; width:100%; font-family:'Inter',sans-serif;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="fase-titulo" style="font-size:0.7rem; letter-spacing:0.15em; color:#666; text-transform:uppercase; font-weight:700;">Fase 2 · Aquecimento</div>
+          <div class="fase-subtitulo" style="font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-top:0.3rem; color:#888;">Cultura Pop · Lógica</div>
+          <div style="font-size:0.65rem; color:#666; margin-top:0.2rem;">39 perguntas · precisa 80%</div>
+        </div>
+        <span class="lock-icon" style="font-size:1.4rem;">🔒</span>
+      </div>
+    </button>
+
+    <button class="fase-btn" id="fase-3-btn" onclick="seleccionarFase(3)" disabled style="background:#2a2a2a; border:2px solid #444; border-radius:14px; padding:1rem 1.2rem; cursor:not-allowed; text-align:left; color:#888; width:100%; font-family:'Inter',sans-serif;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="fase-titulo" style="font-size:0.7rem; letter-spacing:0.15em; color:#666; text-transform:uppercase; font-weight:700;">Fase 3 · Identidade</div>
+          <div class="fase-subtitulo" style="font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-top:0.3rem; color:#888;">Provérbios · Cultura · Música</div>
+          <div style="font-size:0.65rem; color:#666; margin-top:0.2rem;">41 perguntas · precisa 95%</div>
+        </div>
+        <span class="lock-icon" style="font-size:1.4rem;">🔒</span>
+      </div>
+    </button>
+
+    <button class="fase-btn" id="fase-4-btn" onclick="seleccionarFase(4)" disabled style="background:#2a2a2a; border:2px solid #444; border-radius:14px; padding:1rem 1.2rem; cursor:not-allowed; text-align:left; color:#888; width:100%; font-family:'Inter',sans-serif;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="fase-titulo" style="font-size:0.7rem; letter-spacing:0.15em; color:#666; text-transform:uppercase; font-weight:700;">Fase 4 · Actualidade</div>
+          <div class="fase-subtitulo" style="font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-top:0.3rem; color:#888;">Eventos · Ciclones · Política Recente</div>
+          <div style="font-size:0.65rem; color:#666; margin-top:0.2rem;">41 perguntas · precisa 95%</div>
+        </div>
+        <span class="lock-icon" style="font-size:1.4rem;">🔒</span>
+      </div>
+    </button>
+
+    <button class="fase-btn" id="fase-5-btn" onclick="seleccionarFase(5)" disabled style="background:#2a2a2a; border:2px solid #444; border-radius:14px; padding:1rem 1.2rem; cursor:not-allowed; text-align:left; color:#888; width:100%; font-family:'Inter',sans-serif;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="fase-titulo" style="font-size:0.7rem; letter-spacing:0.15em; color:#666; text-transform:uppercase; font-weight:700;">Fase 5 · Sabe Tudo</div>
+          <div class="fase-subtitulo" style="font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-top:0.3rem; color:#888;">História · Política</div>
+          <div style="font-size:0.65rem; color:#666; margin-top:0.2rem;">40 perguntas · precisa 100%</div>
+        </div>
+        <span class="lock-icon" style="font-size:1.4rem;">🔒</span>
+      </div>
+    </button>
+
+  </div>
+
+  <p style="font-size:0.7rem; color:#555; margin-top:1.2rem; text-align:center; max-width:500px;">❤️ 3 vidas por fase · Tens de ver TODAS as perguntas da fase para destrancar a seguinte</p>
+
+  <p style="margin-top:1.5rem; font-size:0.7rem; color:#444; text-align:center;">Criado por <span style="color:#FFD700;">Tomocene Fernando Frio</span> · Beira, Moçambique 🇲🇿</p>
+  <p style="margin-top:0.4rem; font-size:0.6rem; color:#333; text-align:center; letter-spacing:0.05em;">© 2026 Tomocene Fernando Frio. Todos os direitos reservados.<br>É proibida a cópia, reprodução ou distribuição deste jogo sem autorização.</p>
+</div>
+
+<!-- ECRÃ JOGO -->
+<div id="jogo">
+  <div class="hud">
+    <span class="hud-cat" id="hud-cat">Geografia</span>
+    <span class="hud-score" id="hud-score">0 pts</span>
+    <span class="hud-num" id="hud-num">1/10</span>
+    <button id="btn-som" onclick="alternarSom()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--branco); padding:0;">🔊</button>
+    <button id="btn-ambiente" onclick="alternarAmbiente()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--branco); padding:0;">🌧️</button>
+  </div>
+  <div style="text-align:center; margin-bottom:1rem;">
+    <span id="vidas-display" style="font-size:1.5rem; letter-spacing:4px;">❤️❤️❤️</span>
+  </div>
+  <div class="barra-progresso">
+    <div class="barra-fill" id="barra-fill" style="width:0%"></div>
+  </div>
+  <p class="pergunta-categoria" id="perg-cat"></p>
+  <h2 class="pergunta-texto" id="perg-texto"></h2>
+  <div class="opcoes" id="opcoes"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="btn-proxima" id="btn-proxima" onclick="proximaPergunta()">Próxima →</button>
+</div>
+
+<!-- ECRÃ RESULTADO -->
+<div id="resultado" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:2rem; text-align:center; background:radial-gradient(ellipse at top, #0d2b1a 0%, var(--preto) 70%);">
+  <div class="resultado-emoji" id="res-emoji">🏆</div>
+  <h2 class="resultado-titulo" id="res-titulo">Parabéns!</h2>
+  <div class="resultado-score" id="res-score">800</div>
+  <p style="font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--verde);margin-bottom:1rem;">pontos</p>
+  <p class="resultado-msg" id="res-msg"></p>
+  <div class="resultado-stats">
+    <div class="stat">
+      <span class="stat-num" id="res-certas">0</span>
+      <span class="stat-label">Certas</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="res-erradas">0</span>
+      <span class="stat-label">Erradas</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="res-total">0</span>
+      <span class="stat-label">Total</span>
+    </div>
+  </div>
+  <div class="btns-resultado">
+    <button class="btn-jogar-novamente" onclick="jogarNovamente()">Jogar Novamente</button>
+    <button class="btn-menu" onclick="irMenu()">Menu</button>
+  </div>
+  <div style="margin-top:2rem; text-align:center;">
+    <p style="font-size:0.7rem; color:#444; margin-bottom:0.5rem;">Criado por <span style="color:#FFD700;">Tomocene Fernando Frio</span> · Beira 🇲🇿</p>
+    <p style="font-size:0.6rem; color:#333; margin-bottom:0.5rem; letter-spacing:0.05em;">© 2026 Todos os direitos reservados. Cópia não autorizada.</p>
+    <a href="https://wa.me/258835285053" target="_blank" style="font-size:0.75rem; color:#007A4D; text-decoration:none;">💬 Feedback: 83 528 5053</a><br>
+    <span style="font-size:0.75rem; color:#007A4D;">💚 Apoie no E-Mola: 87 776 7831 (Raiva Evaristo Cossa)</span>
+  </div>
+</div>
+
+<script>
+const perguntas = [
+  // GEOGRAFIA
+
+  // HISTÓRIA
+  { id: 1, cat: 'historia', icon: '📖', p: 'Em que ano Moçambique conquistou a independência?', ops: ['1960', '1970', '1975', '1980'], r: 2 },
+  { id: 2, cat: 'historia', icon: '📖', p: 'Quem foi o primeiro presidente de Moçambique?', ops: ['Joaquim Chissano', 'Samora Machel', 'Armando Guebuza', 'Alberto Chipande'], r: 1 },
+  { id: 3, cat: 'historia', icon: '📖', p: 'De qual país Moçambique se independizou?', ops: ['Espanha', 'França', 'Portugal', 'Inglaterra'], r: 2 },
+  { id: 4, cat: 'historia', icon: '📖', p: 'Quando foi fundada a FRELIMO?', ops: ['1960', '1962', '1964', '1968'], r: 1 },
+  { id: 5, cat: 'historia', icon: '📖', p: 'Samora Machel faleceu num acidente de avião em que ano?', ops: ['1984', '1986', '1988', '1990'], r: 1 },
+  { id: 6, cat: 'historia', icon: '📖', p: 'Qual foi o fundador da FRELIMO?', ops: ['Samora Machel', 'Joaquim Chissano', 'Eduardo Mondlane', 'Alberto Chipande'], r: 2 },
+  { id: 7, cat: 'historia', icon: '📖', p: 'O Acordo Geral de Paz foi assinado em que cidade?', ops: ['Maputo', 'Beira', 'Roma', 'Lisboa'], r: 2 },
+  { id: 8, cat: 'historia', icon: '📖', p: 'Qual é a data do Dia da Independência de Moçambique?', ops: ['25 de Abril', '25 de Junho', '7 de Setembro', '1 de Maio'], r: 1 },
+  { id: 9, cat: 'historia', icon: '📖', p: 'Qual foi o nome do juiz que julgou o caso das dívidas ocultas em Moçambique?', ops: ['Manuel Chang', 'Efigénio Baptista', 'Gregório Leão', 'António do Rosário'], r: 1 },
+  { id: 10, cat: 'historia', icon: '📖', p: 'Em que posição terminaram os Mambas sénior na qualificação para o Mundial 2026?', ops: ['1º lugar', '2º lugar', '3º lugar', '4º lugar'], r: 2 },
+  { id: 11, cat: 'historia', icon: '📖', p: 'Os Mambinhas Sub-17 qualificaram-se para o Mundial ao bater qual selecção nas penalidades?', ops: ['Angola', 'Uganda', 'Etiópia', 'Somália'], r: 2 },
+  { id: 12, cat: 'historia', icon: '📖', p: 'Qual foi o resultado das penalidades na qualificação dos Mambinhas Sub-17 para o Mundial?', ops: ['4-3', '5-4', '3-2', '6-5'], r: 1 },
+  { id: 13, cat: 'historia', icon: '📖', p: 'Em que grupo está Moçambique Sub-17 no Mundial Qatar 2026?', ops: ['Grupo A', 'Grupo B', 'Grupo C', 'Grupo D'], r: 1 },
+  { id: 14, cat: 'historia', icon: '📖', p: 'Qual foi o guarda-redes herói que defendeu a penalidade decisiva na qualificação dos Mambinhas?', ops: ['Diego Pelembe', 'Nhampule Jr', 'João Jofrisse', 'Allan'], r: 2 },
+  { id: 15, cat: 'historia', icon: '📖', p: 'Qual era o nome da dose única da vacina contra a Covid-19?', ops: ['AstraZeneca', 'Pfizer', 'Janssen', 'Sinopharm'], r: 2 },
+  { id: 16, cat: 'historia', icon: '📖', p: 'Qual era o horário máximo para estar nas ruas durante o decreto da pandemia em Moçambique?', ops: ['20h', '21h', '22h', 'Meia-noite'], r: 2 },
+  { id: 17, cat: 'historia', icon: '📖', p: 'Qual era a distância mínima entre pessoas recomendada durante a pandemia?', ops: ['1 metro', '1,5 metros', '2 metros', '3 metros'], r: 1 },
+  { id: 18, cat: 'historia', icon: '📖', p: 'Em que ano os moçambicanos repararam que nos carros da PRM vem escrito Mahindra?', ops: ['2018', '2019', '2020', '2021'], r: 2 },
+  { id: 19, cat: 'historia', icon: '📖', p: 'Qual a frase que completa: "Trufafa trufafa..."?', ops: ['FRELIMO está a passar', 'Moçambique está a passar', 'RENAMO está a passar', 'O povo está a passar'], r: 2 },
+
+  // CULTURA
+  { id: 20, cat: 'cultura', icon: '🎭', p: 'Qual é a língua oficial de Moçambique?', ops: ['Changana', 'Sena', 'Português', 'Macua'], r: 2 },
+  { id: 21, cat: 'cultura', icon: '🎭', p: 'O que significa KMK na gíria dos jovens moçambicanos?', ops: ['Saudação', 'Despedida', 'Aviso', 'Nenhuma das opções'], r: 0 },
+  { id: 22, cat: 'cultura', icon: '🎭', p: 'De onde vem a dança Kadoda?', ops: ['Maputo', 'Beira', 'Nampula', 'Tete'], r: 2 },
+  { id: 23, cat: 'cultura', icon: '🎭', p: 'A capulana é um elemento central da cultura moçambicana. O que é?', ops: ['Um prato típico', 'Um instrumento musical', 'Um pano usado pelas mulheres', 'Uma dança tradicional'], r: 2 },
+  { id: 24, cat: 'cultura', icon: '🎭', p: 'Qual é o prato mais popular da gastronomia moçambicana?', ops: ['Matapa', 'Galinha à Zambeziana', 'Camarão grelhado', 'Todas as anteriores'], r: 3 },
+  { id: 25, cat: 'cultura', icon: '🎭', p: 'Qual língua nacional é mais falada no norte de Moçambique?', ops: ['Changana', 'Sena', 'Macua', 'Ndau'], r: 2 },
+  { id: 26, cat: 'cultura', icon: '🎭', p: 'Na gíria jovem moçambicana como se diz "meu pai"?', ops: ['Meu velho', 'Meu cota', 'Meu brother', 'Meu chefe'], r: 1 },
+  { id: 27, cat: 'cultura', icon: '🎭', p: 'Na gíria jovem moçambicana o "como estás?" foi substituído por que expressão?', ops: ['Qual a sena?', 'Tudo bom?', 'Qual o baza?', 'Kmk'], r: 0 },
+  { id: 28, cat: 'cultura', icon: '🎭', p: 'O que significa "Chante" na gíria jovem moçambicana?', ops: ['Problema ou confusão', 'Sair ou ir embora', 'Trabalho', 'Namorada'], r: 0 },
+  { id: 29, cat: 'cultura', icon: '🎭', p: 'Como se chama o prato tradicional feito com folhas de mandioca?', ops: ['Xima', 'Matapa', 'Ponde', 'Nhangau'], r: 1 },
+  { id: 30, cat: 'cultura', icon: '🎭', p: 'O que é o "Nipa" na cultura moçambicana?', ops: ['Uma dança tradicional', 'Uma roupa típica', 'Uma bebida alcoólica tradicional', 'Um instrumento musical'], r: 2 },
+  { id: 31, cat: 'cultura', icon: '🎭', p: 'O que é o "Xitique" na cultura moçambicana?', ops: ['Uma dança do sul', 'Um sistema de poupança colectiva entre amigos', 'Um prato típico', 'Um ritual tradicional'], r: 1 },
+  { id: 32, cat: 'cultura', icon: '🎭', p: 'Na gíria moçambicana "minha pleise" ou "meu cúbico" significa:', ops: ['Meu amigo', 'Minha casa', 'Meu bairro', 'Meu trabalho'], r: 1 },
+
+  // MÚSICA E ARTE
+  { id: 33, cat: 'musica', icon: '🎵', p: 'O cantor Azagaia ficou famoso por que género musical?', ops: ['Marrabenta', 'Hip-Hop e Rap', 'Afropop', 'Kizomba'], r: 1 },
+  { id: 34, cat: 'musica', icon: '🎵', p: 'Qual cantor moçambicano é conhecido pela música "Julieta"?', ops: ['Mr Bow', 'Azagaia', 'Twenty Finger', 'Laylizzy'], r: 2 },
+  { id: 35, cat: 'musica', icon: '🎵', p: 'Qual cantor moçambicano ficou famoso pela música "Essa mulher é uma maranza"?', ops: ['Mr Bow', 'Valter Artístico', 'Azagaia', 'Twenty Finger'], r: 1 },
+  { id: 36, cat: 'musica', icon: '🎵', p: 'Qual é o nome verdadeiro do cantor Mr Bow?', ops: ['Salvador Pedro', 'Salvador Muchangue', 'Salvador Langa', 'Salvador Mondlane'], r: 0 },
+  { id: 37, cat: 'musica', icon: '🎵', p: 'Qual foi o primeiro cantor a cantar uma música alusiva ao Ciclone Idai?', ops: ['Twenty Finger', 'Djick Rock', 'Azagaia', 'Stewart Sukuma'], r: 1 },
+  { id: 38, cat: 'musica', icon: '🎵', p: 'Qual cantor moçambicano é da Baía?', ops: ['Bokly', 'Nikotina KF', 'Azikinera', 'Twenty Finger'], r: 2 },
+  { id: 39, cat: 'musica', icon: '🎵', p: 'Qual cantor moçambicano já não usa óculos de madeira?', ops: ['Azagaia', 'Twenty Finger', 'Azikinera', 'Bokly'], r: 3 },
+  { id: 40, cat: 'musica', icon: '🎵', p: 'Qual escritora moçambicana escreveu o romance "Niketche"?', ops: ['Lília Momplé', 'Paulina Chiziane', 'Noémia de Sousa', 'Sónia Sultuane'], r: 1 },
+  { id: 41, cat: 'musica', icon: '🎵', p: 'O escritor Mia Couto é de que cidade?', ops: ['Maputo', 'Beira', 'Nampula', 'Tete'], r: 1 },
+  { id: 42, cat: 'musica', icon: '🎵', p: 'A dança Marrabenta é originária de que região de Moçambique?', ops: ['Norte', 'Centro', 'Sul — Maputo', 'Oeste'], r: 2 },
+  { id: 43, cat: 'musica', icon: '🎵', p: 'Qual cantor moçambicano disse que Moçambique é um meme?', ops: ['Bokly', 'Azikinera', 'Twenty Finger', 'Nikotina KF'], r: 3 },
+
+  // EVENTOS HISTÓRICOS RECENTES
+  { id: 44, cat: 'eventos', icon: '📰', p: 'Em que data faleceu Afonso Dhlakama, líder da RENAMO?', ops: ['3 de Maio de 2016', '3 de Maio de 2018', '3 de Junho de 2018', '1 de Janeiro de 2018'], r: 1 },
+  { id: 45, cat: 'eventos', icon: '📰', p: 'Onde faleceu Afonso Dhlakama?', ops: ['Maputo', 'Beira', 'Serra da Gorongosa', 'Nampula'], r: 2 },
+  { id: 46, cat: 'eventos', icon: '📰', p: 'Em que data o Ciclone Idai atingiu a cidade da Beira?', ops: ['14 de Março de 2018', '15 de Março de 2019', 'Na noite de 14 para 15 de Março de 2019', '20 de Março de 2019'], r: 2 },
+  { id: 47, cat: 'eventos', icon: '📰', p: 'Quantas pessoas morreram aproximadamente no Ciclone Idai em Moçambique?', ops: ['Cerca de 100', 'Cerca de 300', 'Cerca de 600', 'Cerca de 1000'], r: 2 },
+  { id: 48, cat: 'eventos', icon: '📰', p: 'Quais províncias foram mais afectadas pelo Ciclone Idai?', ops: ['Maputo e Gaza', 'Sofala, Manica, Zambézia e Inhambane', 'Nampula e Cabo Delgado', 'Tete e Niassa'], r: 1 },
+  { id: 49, cat: 'eventos', icon: '📰', p: 'As manifestações pós-eleitorais de 2024 em Moçambique começaram em que data?', ops: ['9 de Outubro de 2024', '19 de Outubro de 2024', '21 de Outubro de 2024', '25 de Outubro de 2024'], r: 2 },
+  { id: 50, cat: 'eventos', icon: '📰', p: 'Quem liderou as manifestações pós-eleitorais de 2024 em Moçambique?', ops: ['Ossufo Momade', 'Lutero Simango', 'Venâncio Mondlane', 'Elvino Dias'], r: 2 },
+  { id: 51, cat: 'eventos', icon: '📰', p: 'Quantas pessoas morreram nas manifestações pós-eleitorais de 2024 em Moçambique?', ops: ['Cerca de 100', 'Cerca de 200', 'Cerca de 411', 'Cerca de 600'], r: 2 },
+  { id: 52, cat: 'eventos', icon: '📰', p: 'Porque se celebra o 7 de Abril em Moçambique?', ops: ['Dia da Independência', 'Dia da Mulher Moçambicana — morte de Josina Machel', 'Dia das Forças Armadas', 'Dia da Paz'], r: 1 },
+  { id: 53, cat: 'eventos', icon: '📰', p: 'Josina Machel era esposa de quem?', ops: ['Eduardo Mondlane', 'Joaquim Chissano', 'Samora Machel', 'Alberto Chipande'], r: 2 },
+  { id: 54, cat: 'eventos', icon: '📰', p: 'Em que ano morreu Josina Machel, homenageada no 7 de Abril?', ops: ['1968', '1971', '1975', '1980'], r: 1 },
+  { id: 55, cat: 'eventos', icon: '📰', p: 'O Ciclone Idai foi classificado como que categoria de ciclone?', ops: ['Categoria 1', 'Categoria 2', 'Categoria 3', 'Categoria 5'], r: 2 },
+  { id: 56, cat: 'eventos', icon: '📰', p: 'As eleições gerais de Moçambique em 2024 realizaram-se em que data?', ops: ['9 de Setembro de 2024', '9 de Outubro de 2024', '25 de Outubro de 2024', '1 de Novembro de 2024'], r: 1 },
+  { id: 57, cat: 'eventos', icon: '📰', p: 'Quem disse que ganhou as eleições presidenciais de 2024 mas não governou?', ops: ['Ossufo Momade', 'Filipe Nyusi', 'Daniel Chapo', 'Venâncio Mondlane'], r: 3 },
+  { id: 58, cat: 'eventos', icon: '📰', p: 'O efeito de Ormuz afectou Moçambique principalmente em que área?', ops: ['Turismo', 'Abastecimento de combustível e produtos', 'Educação', 'Saúde'], r: 1 },
+  { id: 59, cat: 'eventos', icon: '📰', p: 'O txopela é um meio de transporte popular em que cidade moçambicana?', ops: ['Maputo', 'Nampula', 'Beira', 'Todas as anteriores'], r: 3 },
+  { id: 60, cat: 'eventos', icon: '📰', p: 'Qual foi o ano em que mais candidatos ficaram de fora da PRM por insuficiência de vagas?', ops: ['2022', '2024', '2025', '2026'], r: 3 },
+  { id: 61, cat: 'eventos', icon: '📰', p: 'Em que ano o Ciclone Kenneth atingiu o norte de Moçambique?', ops: ['2017', '2018', '2019', '2020'], r: 2 },
+  { id: 62, cat: 'eventos', icon: '📰', p: 'Qual província foi mais afectada pelo Ciclone Kenneth?', ops: ['Nampula', 'Niassa', 'Zambézia', 'Cabo Delgado'], r: 3 },
+  { id: 63, cat: 'eventos', icon: '📰', p: 'Em que ano Moçambique descobriu gás natural em Cabo Delgado?', ops: ['2005', '2008', '2010', '2015'], r: 2 },
+  { id: 64, cat: 'eventos', icon: '📰', p: 'Qual empresa estrangeira lidera a exploração do gás em Cabo Delgado?', ops: ['Shell', 'BP', 'Petrobras', 'TotalEnergies'], r: 3 },
+  { id: 65, cat: 'eventos', icon: '📰', p: 'Qual cidade de Cabo Delgado ficou mundialmente conhecida pelos ataques terroristas em 2021?', ops: ['Pemba', 'Mocímboa da Praia', 'Palma', 'Montepuez'], r: 2 },
+
+  // CICLONES E EVENTOS CLIMÁTICOS
+  { id: 193, cat: 'eventos', icon: '📰', p: 'Em 2022, um livro escolar moçambicano da 6ª classe cometeu um erro grave ao situar Moçambique em que região de África?', ops: ['África Ocidental', 'África Oriental', 'África Central', 'África do Norte'], r: 1 },
+  { id: 194, cat: 'eventos', icon: '📰', p: 'No mesmo erro de 2022, o livro também não mencionava que Moçambique pertence a que organização regional?', ops: ['União Africana', 'CPLP', 'SADC', 'ONU'], r: 2 },
+  { id: 195, cat: 'eventos', icon: '📰', p: 'Segundo o mesmo livro com erros de 2022, o Zimbabwe era descrito como sendo banhado por que mar, o que é geograficamente impossível?', ops: ['Mar Mediterrâneo', 'Mar Vermelho', 'Oceano Atlântico', 'Mar Cáspio'], r: 1 },
+  { id: 196, cat: 'eventos', icon: '📰', p: 'No livro da 6ª classe com erros de 2022, a fotografia publicada como sendo do parlamento de Moçambique era na verdade de que país?', ops: ['Zimbabwe', 'África do Sul', 'Angola', 'Tanzânia'], r: 2 },
+  { id: 197, cat: 'eventos', icon: '📰', p: 'Qual editora foi responsabilizada pela negligência no caso dos erros do livro da 6ª classe em 2022?', ops: ['Texto Editora', 'Porto Editora', 'Editora Educar', 'Plural Editores'], r: 1 },
+
+  // VIDA DO BAIRRO
+  { id: 66, cat: 'bairro', icon: '🏘️', p: 'Quando alguém diz "Já estou a chegar", normalmente significa:', ops: ['Está na porta', 'Já chegou', 'Ainda está longe', 'Já foi embora'], r: 2 },
+  { id: 67, cat: 'bairro', icon: '🏘️', p: 'Se um amigo pede 100 MT emprestados e nunca devolve, o que provavelmente aconteceu?', ops: ['Esqueceu', 'Mudou de bairro', 'Virou investimento perdido', 'Todas as anteriores'], r: 3 },
+  { id: 68, cat: 'bairro', icon: '🏘️', p: 'Qual é o animal mais rápido do bairro?', ops: ['Cão', 'Gato', 'Cabrito', 'Galinha quando vê panela aberta'], r: 3 },
+  { id: 69, cat: 'bairro', icon: '🏘️', p: 'Quem costuma saber das novidades do bairro primeiro?', ops: ['Polícia', 'Secretário', 'Vizinha fofoqueira', 'Pastor'], r: 2 },
+  { id: 70, cat: 'bairro', icon: '🏘️', p: 'Quando alguém diz "É só 5 minutos", normalmente significa:', ops: ['5 minutos', '10 minutos', '30 minutos ou mais', '1 minuto'], r: 2 },
+  { id: 71, cat: 'bairro', icon: '🏘️', p: 'Qual é o despertador mais comum do bairro?', ops: ['Relógio', 'Telemóvel', 'Galo', 'Vizinho com música alta'], r: 3 },
+  { id: 72, cat: 'bairro', icon: '🏘️', p: 'O que nunca falta numa conversa de homens na esquina?', ops: ['Matemática', 'Mulher e futebol', 'Trabalho', 'Astronomia'], r: 1 },
+  { id: 73, cat: 'bairro', icon: '🏘️', p: 'Quando a energia volta depois de um corte, o que muitos fazem?', ops: ['Dormem', 'Gritam ou batem palmas', 'Saem de casa', 'Fecham as portas'], r: 1 },
+  { id: 74, cat: 'escola', icon: '🎒', p: 'Qual era a pergunta mais temida pelo aluno distraído?', ops: ['Qual é o teu nome?', 'Copiaste o exercício?', 'Repete o que eu acabei de explicar', 'Que horas são?'], r: 2 },
+  { id: 75, cat: 'escola', icon: '🎒', p: 'O aluno que esquece sempre o caderno costuma pedir:', ops: ['Dinheiro', 'Água', 'Folhas emprestadas', 'Comida'], r: 2 },
+  { id: 76, cat: 'escola', icon: '🎒', p: 'Quando o professor faltava sem aviso, a turma ficava:', ops: ['Triste', 'Confusa', 'Feliz', 'Nervosa'], r: 2 },
+  { id: 77, cat: 'escola', icon: '🎒', p: 'Qual era a frase mais usada antes do teste?', ops: ['Eu estudei muito', 'Vai correr bem', 'Empresta-me apontamentos', 'Já sei tudo'], r: 2 },
+  { id: 78, cat: 'escola', icon: '🎒', p: 'Quem terminava o teste primeiro geralmente:', ops: ['Sabia tudo', 'Não sabia nada', 'Tanto podia saber tudo como nada', 'Era professor'], r: 2 },
+  { id: 79, cat: 'escola', icon: '🎒', p: 'O que mais desaparecia na escola?', ops: ['Carteiras', 'Canetas', 'Quadros', 'Livros da biblioteca'], r: 1 },
+  { id: 80, cat: 'chapa', icon: '🚐', p: 'Quando o cobrador diz "Tem espaço!", normalmente significa:', ops: ['Há muito espaço', 'Cabem mais alguns apertados', 'O chapa está vazio', 'Já não entra ninguém'], r: 1 },
+  { id: 81, cat: 'chapa', icon: '🚐', p: 'Qual é o superpoder do cobrador?', ops: ['Voar', 'Correr rápido', 'Encontrar espaço onde não existe', 'Ler pensamentos'], r: 2 },
+  { id: 82, cat: 'chapa', icon: '🚐', p: 'O que o passageiro faz quando vê um amigo pela janela?', ops: ['Finge que não viu', 'Acena', 'Sai do chapa', 'Fecha os olhos'], r: 1 },
+  { id: 83, cat: 'chapa', icon: '🚐', p: 'Qual é o maior desafio de um chapa cheio?', ops: ['Encontrar dinheiro', 'Encontrar ar', 'Encontrar música', 'Encontrar motorista'], r: 1 },
+  { id: 84, cat: 'chapa', icon: '🚐', p: 'O que acontece quando alguém pede para parar fora da paragem?', ops: ['Discussão', 'O chapa voa', 'O trânsito desaparece', 'O cobrador desce'], r: 0 },
+  { id: 85, cat: 'maes', icon: '👩‍👦', p: 'Quando a tua mãe diz "Não vou bater em ti", o que normalmente significa?', ops: ['Estás salvo', 'Ela esqueceu', 'O perigo acabou', 'A tempestade está a chegar'], r: 3 },
+  { id: 86, cat: 'maes', icon: '👩‍👦', p: 'Quando a tua mãe diz "Quando chegarmos em casa conversamos", isso significa:', ops: ['Conselho', 'Castigo à vista', 'Presente', 'Festa'], r: 1 },
+  { id: 87, cat: 'maes', icon: '👩‍👦', p: 'Quando ela te chama pelo nome completo:', ops: ['Está feliz', 'Tem dinheiro para dar', 'Há problema', 'Quer ajuda'], r: 2 },
+  { id: 88, cat: 'maes', icon: '👩‍👦', p: 'A frase "Eu não vou repetir outra vez" normalmente vem:', ops: ['Depois da primeira explicação', 'Depois da décima explicação', 'Nunca', 'Antes de falar'], r: 1 },
+  { id: 89, cat: 'maes', icon: '👩‍👦', p: 'O que significa "Vou contar até três"?', ops: ['Aula de matemática', 'Último aviso', 'Jogo', 'Concurso'], r: 1 },
+  { id: 90, cat: 'maes', icon: '👩‍👦', p: 'Quando a mãe diz "Traz-me aquela coisa ali", ela espera que tu:', ops: ['Perguntes qual coisa', 'Adivinhes correctamente', 'Tragas qualquer coisa', 'Não tragas nada'], r: 1 },
+  { id: 91, cat: 'futebol', icon: '⚽', p: 'Quando o dono da bola vai embora zangado:', ops: ['Continua o jogo', 'Troca-se a bola', 'Acaba o jogo', 'Chama-se árbitro'], r: 2 },
+  { id: 92, cat: 'futebol', icon: '⚽', p: 'O árbitro do futebol de rua normalmente era:', ops: ['Um profissional', 'Um adulto', 'O dono da bola ou alguém escolhido', 'Um polícia'], r: 2 },
+  { id: 93, cat: 'futebol', icon: '⚽', p: 'Quando a bola cai no quintal do vizinho bravo:', ops: ['O jogo melhora', 'Começa uma missão de resgate', 'Compra-se outra bola', 'Chama-se a polícia'], r: 1 },
+  { id: 94, cat: 'futebol', icon: '⚽', p: 'O que servia de baliza quando não havia postes?', ops: ['Mochilas ou pedras', 'Garrafas cheias', 'Sapatos do árbitro', 'Bicicletas'], r: 0 },
+  { id: 95, cat: 'futebol', icon: '⚽', p: 'Qual era a regra mais discutida no futebol de rua?', ops: ['Cor da bola', 'Duração do jogo', 'Se foi golo ou não', 'Nome das equipas'], r: 2 },
+  { id: 96, cat: 'futebol', icon: '⚽', p: 'O verdadeiro VAR do futebol de rua era:', ops: ['Telemóvel', 'Árbitro', 'Discussão de vários minutos', 'Vizinho'], r: 2 },
+
+  // CICLONES E EVENTOS CLIMÁTICOS
+  { id: 97, cat: 'eventos', icon: '📰', p: 'Qual ciclone destruiu cerca de 90% da cidade da Beira em Março de 2019?', ops: ['Ciclone Freddy', 'Ciclone Idai', 'Ciclone Kenneth', 'Ciclone Chido'], r: 1 },
+  { id: 98, cat: 'eventos', icon: '📰', p: 'Durante o mandato de que presidente ocorreram as Cheias de 2000?', ops: ['Armando Guebuza', 'Joaquim Chissano', 'Filipe Nyusi', 'Samora Machel'], r: 1 },
+  { id: 99, cat: 'eventos', icon: '📰', p: 'O Ciclone Kenneth atingiu Cabo Delgado quantas semanas depois do Idai, em 2019?', ops: ['2 semanas', '6 semanas', '6 meses', 'No mesmo dia'], r: 1 },
+  { id: 100, cat: 'eventos', icon: '📰', p: 'O Ciclone Freddy durou 37 dias em 2023. Quantas vezes entrou em Moçambique?', ops: ['1 vez', '2 vezes', '3 vezes', '37 vezes'], r: 1 },
+  { id: 101, cat: 'eventos', icon: '📰', p: 'As Cheias do Zambeze de 2013, que cortaram a Linha de Sena, ocorreram no mandato de qual presidente?', ops: ['Joaquim Chissano', 'Armando Guebuza', 'Filipe Nyusi', 'Daniel Chapo'], r: 1 },
+  { id: 102, cat: 'eventos', icon: '📰', p: 'A Beira ficou isolada como uma ilha quando a EN6 foi cortada pelo Ciclone Idai. Em que ano?', ops: ['2007', '2013', '2019', '2024'], r: 2 },
+  { id: 103, cat: 'eventos', icon: '📰', p: 'O Ciclone Chido em Dezembro de 2024 foi o primeiro grande teste de qual Presidente?', ops: ['Filipe Nyusi', 'Daniel Chapo, ainda antes da tomada de posse', 'Armando Guebuza', 'Joaquim Chissano'], r: 1 },
+  { id: 104, cat: 'eventos', icon: '📰', p: 'As Cheias do Zambeze de 2013 que inundaram Mutarara, em Tete, fizeram Cahora Bassa abrir comportas no mandato de quem?', ops: ['Ciclone Fávio 2007', 'Cheias do Zambeze 2013', 'Ciclone Idai 2019', 'Seca de 2005'], r: 1 },
+  { id: 105, cat: 'eventos', icon: '📰', p: 'Qual destes ciclones NÃO afectou directamente a região de Moatize, em Tete?', ops: ['Idai 2019', 'Kenneth 2019', 'Freddy 2023', 'Todos afectaram'], r: 1 },
+  { id: 106, cat: 'eventos', icon: '📰', p: 'Que presidente moçambicano enfrentou 2 ciclones de categoria 4 no mesmo ano?', ops: ['Joaquim Chissano', 'Armando Guebuza', 'Filipe Nyusi', 'Daniel Chapo'], r: 2 },
+  { id: 107, cat: 'eventos', icon: '📰', p: 'O escândalo das dívidas ocultas — EMATUM, ProIndicus e MAM — fez Moçambique entrar em que situação financeira?', ops: ['Recessão controlada', 'Default e corte de ajuda do FMI', 'Crescimento acelerado', 'Estabilidade cambial'], r: 1 },
+  { id: 108, cat: 'eventos', icon: '📰', p: 'Em que ano começou a insurgência armada em Mocímboa da Praia, Cabo Delgado?', ops: ['2015', '2017', '2019', '2021'], r: 1 },
+  { id: 109, cat: 'eventos', icon: '📰', p: 'Qual foi o primeiro ciclone categoria 4 a atingir Cabo Delgado na história registada?', ops: ['Idai 2019', 'Kenneth 2019', 'Freddy 2023', 'Chido 2024'], r: 1 },
+  { id: 110, cat: 'eventos', icon: '📰', p: 'Em que mês de 2020 Moçambique registou o primeiro caso de Covid-19?', ops: ['Janeiro 2020', 'Março 2020', 'Junho 2020', 'Dezembro 2020'], r: 1 },
+  { id: 111, cat: 'eventos', icon: '📰', p: 'As Cheias de 2000, que mataram mais de 700 pessoas, levaram à criação de que instituição?', ops: ['INAM', 'INGC', 'PRM', 'EDM'], r: 1 },
+  { id: 112, cat: 'eventos', icon: '📰', p: 'Qual ciclone de 2023 bateu recorde mundial de duração, entrando duas vezes em Moçambique?', ops: ['Idai', 'Kenneth', 'Freddy', 'Gombe'], r: 2 },
+  { id: 113, cat: 'eventos', icon: '📰', p: 'Que distrito de Cabo Delgado foi quase totalmente destruído pelo Ciclone Chido em Dezembro de 2024?', ops: ['Pemba', 'Mocímboa da Praia', 'Mecúfi', 'Montepuez'], r: 2 },
+  { id: 114, cat: 'eventos', icon: '📰', p: 'Após as eleições de 9 de Outubro de 2024, que fenómeno marcou os meses de Novembro e Dezembro em Moçambique?', ops: ['Greve geral dos professores', 'Protestos pós-eleitorais em todo o país', 'Ciclone Gombe', 'Seca no Sul'], r: 1 },
+  { id: 115, cat: 'eventos', icon: '📰', p: 'Em 2021, que ataque marcou a cidade de Palma, em Cabo Delgado, levando a TotalEnergies a suspender o projecto de gás?', ops: ['Ataque de 24 de Março', 'Ataque de 1 de Janeiro', 'Ataque de 25 de Junho', 'Ataque de 7 de Setembro'], r: 0 },
+
+  // CULTURA POPULAR E MITOS
+  { id: 116, cat: 'popular', icon: '🎭', p: 'Na gíria popular o que acontece com o camarão que dorme?', ops: ['Onda leva', 'Vai para além mar', 'É comido', 'Nenhuma das opções'], r: 0 },
+  { id: 117, cat: 'popular', icon: '🎭', p: 'Se no sapateiro não assa pato, onde assa pato?', ops: ['Na loja', 'Na assadeira', 'Na Botique', 'Nenhuma'], r: 1 },
+  { id: 118, cat: 'popular', icon: '🎭', p: 'Se a mãe do José tem 5 filhos cujos primeiros nomes são Jeja, Jejó, Jijo, Jojó — qual seria o 5º nome?', ops: ['Joja', 'Joji', 'José', 'Jujo'], r: 2 },
+  { id: 119, cat: 'popular', icon: '🎭', p: 'Como era chamado o jogo em que alguém contava enquanto os outros se escondiam e depois tinham que chutar a bola?', ops: ['Toma Toma', 'Banana', 'Feijão doce', 'Banana Bola'], r: 3 },
+  { id: 120, cat: 'popular', icon: '🎭', p: 'Segundo o mito infantil, porque não podíamos ficar sem camisa à noite?', ops: ['Por causa do frio', 'Para evitar malária', 'Para não ser contado os ossos com chipoco', 'Para não ficar doente'], r: 2 },
+  { id: 121, cat: 'popular', icon: '🎭', p: 'Segundo o mito infantil, porque não podíamos comer a alta hora da noite?', ops: ['Porque comes com fantasmas', 'Porque já não dava hora', 'Porque a comida estava fria', 'Não há razão'], r: 0 },
+  { id: 122, cat: 'popular', icon: '🎭', p: 'Segundo os mitos infantis, porque não se podia chorar de noite?', ops: ['Porque era pecado', 'Para não ser levado a voz com fantasma', 'Mamã proibia', 'Papá proibia'], r: 1 },
+  { id: 123, cat: 'popular', icon: '🎭', p: 'Como era chamado o jogo em que tínhamos que falar as cores enquanto saltávamos casas?', ops: ['Amarelo amarelo', 'Cor cor sai', 'Igue gelo', 'Rosa Rosa sai'], r: 1 },
+  { id: 124, cat: 'popular', icon: '🎭', p: 'Segundo a lenda, porque não podíamos assobiar de noite?', ops: ['Dava azar', 'Chamava cobras ou fantasmas', 'Acordava os vizinhos', 'Era falta de respeito'], r: 1 },
+  { id: 125, cat: 'popular', icon: '🎭', p: 'Quem é o "Homem do Saco" nas histórias infantis?', ops: ['Vendedor de carvão', 'Homem que raptava crianças mal-comportadas', 'Catador de lixo', 'Mendigo'], r: 1 },
+  { id: 126, cat: 'popular', icon: '🎭', p: 'Segundo o mito, o que acontecia se varresses os pés de uma menina?', ops: ['Ela não casava', 'Ela ficava rica', 'Ela tinha azar', 'Ela ficava doente'], r: 0 },
+  { id: 127, cat: 'popular', icon: '🎭', p: 'Segundo o mito, o que acontece se engolires caroço de fruta?', ops: ['Nasce árvore na barriga', 'Ficas doente', 'Não acontece nada', 'Ficas forte'], r: 0 },
+  { id: 128, cat: 'popular', icon: '🎭', p: 'No mito, se uma coruja cantasse perto de casa, o que significava?', ops: ['Que vinha visita', 'Que alguém ia morrer', 'Que ia chover', 'Que dava sorte'], r: 1 },
+  { id: 129, cat: 'popular', icon: '🎭', p: 'No mito, porque não se podia comer e assobiar ao mesmo tempo?', ops: ['Engasgava', 'Chamava feiticeiro', 'Era falta de educação', 'Dava dor de barriga'], r: 1 },
+  { id: 130, cat: 'popular', icon: '🎭', p: 'No mito infantil, o que acontecia se uma mulher saltasse o anzol?', ops: ['Ela se pescava', 'Nada acontecia', 'O anzol não pegava', 'Nenhuma das opções'], r: 2 },
+  { id: 131, cat: 'popular', icon: '🎭', p: 'Segundo o mito infantil, o que há no final do arco-íris?', ops: ['Ouro', 'Jóias', 'Muitas cores', 'Um balde de tintas'], r: 0 },
+  { id: 132, cat: 'popular', icon: '🎭', p: 'Qual é o ingrediente principal da Matapa?', ops: ['Mandioca', 'Folha de mandioca (cacana)', 'Coco', 'Amendoim'], r: 1 },
+  { id: 133, cat: 'popular', icon: '🎭', p: 'O que leva o Frango à Zambeziana?', ops: ['Leite de coco e piripiri', 'Molho de tomate', 'Manteiga e alho', 'Vinho tinto'], r: 0 },
+  { id: 134, cat: 'popular', icon: '🎭', p: 'As Chamussas são de origem:', ops: ['Portuguesa', 'Indiana', 'Árabe', 'Chinesa'], r: 1 },
+  { id: 135, cat: 'popular', icon: '🎭', p: 'O que é Badjia?', ops: ['Bolinhos de farinha de milho', 'Bolinhos de farinha de grão com cebola e piripiri', 'Doce de coco', 'Pão de mandioca'], r: 1 },
+  { id: 136, cat: 'popular', icon: '🎭', p: 'Se te chamam de "Boss" na gíria moçambicana, é porque:', ops: ['És chefe de alguém', 'É forma de respeito ou amizade', 'És rico', 'És velho'], r: 1 },
+  { id: 137, cat: 'popular', icon: '🎭', p: 'O que significa "Mboa" na gíria moçambicana?', ops: ['Mãe', 'Mulher ou namorada', 'Amiga', 'Irmã'], r: 1 },
+  { id: 138, cat: 'popular', icon: '🎭', p: 'O que significa "Jobar" na gíria moçambicana?', ops: ['Correr', 'Trabalhar', 'Roubar', 'Dormir'], r: 1 },
+  { id: 139, cat: 'popular', icon: '🎭', p: 'O que significa "Fazer bolada"?', ops: ['Jogar futebol', 'Fazer negócio ou ganhar dinheiro', 'Comer muito', 'Mentir'], r: 1 },
+  { id: 140, cat: 'popular', icon: '🎭', p: 'Se alguém está "nice" na gíria moçambicana, está:', ops: ['Bonito ou bem vestido', 'Zangado', 'A falar inglês', 'Com fome'], r: 0 },
+  { id: 141, cat: 'popular', icon: '🎭', p: 'O que é "Matreco" na gíria moçambicana?', ops: ['Comida', 'Pessoa do interior, sem estilo da cidade', 'Carro velho', 'Música lenta'], r: 1 },
+
+  // LÓGICA E PEGADINHAS
+  { id: 142, cat: 'logica', icon: '🧠', p: 'Um chapa sai da Baixa com 20 pessoas. Em cada paragem saem 2 e entram 3. Depois de 5 paragens, quantas pessoas tem?', ops: ['20', '25', '30', '21'], r: 1 },
+  { id: 143, cat: 'logica', icon: '🧠', p: 'Se 1 maçã custa 10 MT, quanto custam 10 maçãs e meia?', ops: ['105 MT', '100 MT', '110 MT', 'Não se vende meia maçã'], r: 0 },
+  { id: 144, cat: 'logica', icon: '🧠', p: 'Quantos meses têm 28 dias?', ops: ['1', '2', '12', 'Depende do ano'], r: 2 },
+  { id: 145, cat: 'logica', icon: '🧠', p: 'Entras num quarto escuro com um fósforo. Tem vela, lamparina e fogão. O que acendes primeiro?', ops: ['Vela', 'Lamparina', 'Fogão', 'Fósforo'], r: 3 },
+  { id: 146, cat: 'logica', icon: '🧠', p: 'Se um avião cai na fronteira de Moçambique e Malawi, onde se deve enterrar os sobreviventes?', ops: ['Em Moçambique', 'No Malawi', 'Na fronteira', 'Nenhuma das opções'], r: 3 },
+  { id: 147, cat: 'logica', icon: '🧠', p: 'Estás numa corrida e ultrapassas quem está em 2º lugar. Em que lugar ficas?', ops: ['1º', '2º', '3º', 'Último'], r: 1 },
+  { id: 148, cat: 'logica', icon: '🧠', p: 'Uma casa tem 4 cantos. Cada canto tem 1 gato. Cada gato vê 3 gatos. Quantos gatos há na casa?', ops: ['12', '16', '4', '3'], r: 2 },
+  { id: 149, cat: 'logica', icon: '🧠', p: 'Um chapa sai da Baixa com 80 passageiros e chega ao Dondo com 81. Como é isso possível?', ops: ['Erro de contagem', 'Uma mulher grávida deu à luz', 'Entrou mais 1', 'É impossível'], r: 1 },
+  { id: 150, cat: 'logica', icon: '🧠', p: 'Tens 3 pães e comes 3 pães. Quantos pães tinhas?', ops: ['0', '3', '6', 'Ficas com fome'], r: 1 },
+  { id: 151, cat: 'logica', icon: '🧠', p: 'Se hoje é terça-feira, que dia foi anteontem?', ops: ['Domingo', 'Segunda', 'Sábado', 'Quinta'], r: 0 },
+  { id: 152, cat: 'logica', icon: '🧠', p: 'Em Moçambique, "dar dinheiro de refresco" significa:', ops: ['Dar refrigerante', 'Dar suborno ou dinheiro', 'Dar combustível', 'Dar boleia'], r: 1 },
+  { id: 153, cat: 'logica', icon: '🧠', p: 'Como explicar um avião que sai na bagagem com 50 passageiros e chega ao fundo com 51?', ops: ['Pararam pelo caminho', 'Alguém não foi contado', 'Havia uma mulher grávida que deu à luz', 'É impossível'], r: 2 },
+  { id: 154, cat: 'logica', icon: '🧠', p: 'Qual número simboliza meio-dia?', ops: ['12:30', '12:00', '12:45', '00:00'], r: 1 },
+
+  // PROVÉRBIOS E DITADOS
+  { id: 155, cat: 'proverbios', icon: '📜', p: 'Complete: "Saco vazio não fica em pé, mas..."', ops: ['Desculpa não enche barriga', 'Barriga vazia não tem ouvidos', 'Quem tem boca vai a Roma', 'Água mole em pedra dura'], r: 0 },
+  { id: 156, cat: 'proverbios', icon: '📜', p: 'O que quer dizer "Água mole em pedra dura, tanto bate até que fura"?', ops: ['Que a água estraga pedra', 'Que a persistência vence dificuldades', 'Que não se deve bater em pedra', 'Que água é forte'], r: 1 },
+  { id: 157, cat: 'proverbios', icon: '📜', p: 'Complete o ditado: "Quem tem boca..."', ops: ['Come tudo', 'Vai a Roma', 'Fala muito', 'Não cala'], r: 1 },
+  { id: 158, cat: 'proverbios', icon: '📜', p: 'O que significa "Cada macaco no seu galho"?', ops: ['Que macaco não desce da árvore', 'Cada um no seu lugar ou assunto', 'Que macaco é esperto', 'Que não se deve misturar'], r: 1 },
+  { id: 159, cat: 'proverbios', icon: '📜', p: 'Complete: "De grão em grão..."', ops: ['A galinha enche o papo', 'Se faz o pão', 'Cresce a plantação', 'Voa o passarinho'], r: 0 },
+  { id: 160, cat: 'proverbios', icon: '📜', p: 'O que quer dizer "Burro velho não aprende línguas"?', ops: ['Que burro não fala', 'Que é difícil mudar hábitos antigos', 'Que velho não estuda', 'Que animal não entende'], r: 1 },
+  { id: 161, cat: 'proverbios', icon: '📜', p: 'Complete: "Quem não tem cão..."', ops: ['Não caça', 'Caça com gato', 'Compra carne', 'É assaltado'], r: 1 },
+  { id: 162, cat: 'proverbios', icon: '📜', p: 'O que significa "Estar na boca do lobo"?', ops: ['Ter fome', 'Estar em grande perigo', 'Falar muito', 'Ser corajoso'], r: 1 },
+  { id: 163, cat: 'proverbios', icon: '📜', p: 'Complete: "Numa casa onde falta pão..."', ops: ['Todos brigam e ninguém tem razão', 'Ninguém entra', 'Fecha a porta', 'Todos dormem cedo'], r: 0 },
+  { id: 164, cat: 'proverbios', icon: '📜', p: '"Cabrito come onde está amarrado" quer dizer:', ops: ['Que cabrito só come capim', 'Cada um aproveita as oportunidades que tem por perto', 'Que não se deve amarrar cabrito', 'Que cabrito é esperto'], r: 1 },
+  { id: 165, cat: 'proverbios', icon: '📜', p: 'Complete: "Macaco só olha para o rabo do..."', ops: ['Outro macaco', 'Leão', 'Amigo', 'Dono'], r: 0 },
+  { id: 166, cat: 'proverbios', icon: '📜', p: '"Água morna não queima casa" significa:', ops: ['Que água morna é segura', 'Problemas pequenos não destroem nada', 'Que casa não pega fogo', 'Que se deve usar água fria'], r: 1 },
+  { id: 167, cat: 'proverbios', icon: '📜', p: 'O que quer dizer "Pau que nasce torto, morre torto"?', ops: ['Que árvore torta não serve', 'Quem tem mau hábito desde cedo dificilmente muda', 'Que pau torto não queima', 'Que se deve cortar cedo'], r: 1 },
+  { id: 168, cat: 'proverbios', icon: '📜', p: '"Quem não deve não teme" significa:', ops: ['Quem é inocente anda tranquilo', 'Quem deve dinheiro foge', 'Quem não tem medo é corajoso', 'Quem não tem dívidas dorme bem'], r: 0 },
+  { id: 169, cat: 'proverbios', icon: '📜', p: 'Complete: "Em terra de cego, quem tem um olho é..."', ops: ['Doutor', 'Rei', 'Esperto', 'Raro'], r: 1 },
+  { id: 170, cat: 'proverbios', icon: '📜', p: '"Quando a esmola é grande, o santo desconfia" quer dizer:', ops: ['Que santo não gosta de esmola', 'Desconfia de oferta muito boa', 'Que esmola tem que ser pequena', 'Que santo é desconfiado'], r: 1 },
+  { id: 171, cat: 'proverbios', icon: '📜', p: 'Complete: "Mais vale um pássaro na mão do que..."', ops: ['Dois no mato', 'Dois a voar', 'Cem a voar', 'Dez no ninho'], r: 1 },
+
+  // SIGLAS DE MOÇAMBIQUE (adicionar à categoria política)
+  { id: 172, cat: 'politica', icon: '🏛️', p: 'O que significa a sigla LAM em Moçambique?', ops: ['Liga Académica de Maputo', 'Linhas Aéreas de Moçambique', 'Liga dos Amigos de Maputo', 'Lanche da Manhã'], r: 1 },
+  { id: 173, cat: 'politica', icon: '🏛️', p: 'Quantas HCB existem em Moçambique?', ops: ['2 — Hospital Central da Beira e Hidroeléctrica de Cahora Bassa', '1 — Hidroeléctrica de Cahora Bassa', '3 — incluindo Hospital de Boane', '1 — Hospital Central da Beira'], r: 0 },
+  { id: 174, cat: 'politica', icon: '🏛️', p: 'O que significa a sigla EDM em Moçambique?', ops: ['Escola de Dança de Maputo', 'Electricidade de Moçambique', 'Empresa de Desenvolvimento Mineiro', 'Estádio da Machava'], r: 1 },
+  { id: 175, cat: 'politica', icon: '🏛️', p: 'Qual a sigla de Caminhos de Ferro de Moçambique?', ops: ['CDM', 'CFN', 'CFM', 'CMF'], r: 2 },
+  { id: 176, cat: 'politica', icon: '🏛️', p: 'Qual partido político moçambicano é considerado um acrónimo?', ops: ['FRELIMO', 'RENAMO', 'MDM', 'FRELIMO e RENAMO'], r: 3 },
+
+  // POLÍTICA
+  { id: 177, cat: 'politica', icon: '🏛️', p: 'Qual é o actual partido no poder em Moçambique?', ops: ['RENAMO', 'MDM', 'FRELIMO', 'PODEMOS'], r: 2 },
+  { id: 178, cat: 'politica', icon: '🏛️', p: 'Quem é o actual Presidente de Moçambique?', ops: ['Filipe Nyusi', 'Daniel Chapo', 'Armando Guebuza', 'Joaquim Chissano'], r: 1 },
+  { id: 179, cat: 'politica', icon: '🏛️', p: 'A RENAMO foi fundada por quem?', ops: ['André Matsangaissa', 'Afonso Dhlakama', 'Ossufo Momade', 'Raul Domingos'], r: 0 },
+  { id: 180, cat: 'politica', icon: '🏛️', p: 'Em que ano Moçambique realizou as primeiras eleições multipartidárias?', ops: ['1990', '1992', '1994', '1999'], r: 2 },
+  { id: 181, cat: 'politica', icon: '🏛️', p: 'A constituição actual de Moçambique é de que ano?', ops: ['1975', '1990', '2004', '2018'], r: 2 },
+  { id: 182, cat: 'politica', icon: '🏛️', p: 'Qual é o órgão legislativo de Moçambique?', ops: ['Senado', 'Assembleia da República', 'Parlamento Nacional', 'Congresso'], r: 1 },
+  { id: 183, cat: 'politica', icon: '🏛️', p: 'Qual foi o primeiro partido a liderar a cidade da Beira?', ops: ['RENAMO', 'MDM', 'PODEMOS', 'FRELIMO'], r: 3 },
+  { id: 184, cat: 'politica', icon: '🏛️', p: 'Qual foi o terceiro presidente de Moçambique?', ops: ['Joaquim Chissano', 'Samora Machel', 'Armando Guebuza', 'Filipe Nyusi'], r: 2 },
+  { id: 185, cat: 'politica', icon: '🏛️', p: 'O MDM — Movimento Democrático de Moçambique — foi fundado em que ano?', ops: ['2005', '2008', '2009', '2012'], r: 2 },
+  { id: 186, cat: 'politica', icon: '🏛️', p: 'Qual cidade é a capital política e económica de Moçambique?', ops: ['Beira', 'Nampula', 'Maputo', 'Tete'], r: 2 },
+  { id: 187, cat: 'politica', icon: '🏛️', p: 'Quem foi o presidente do município da Beira que substituiu Daviz Simango após a sua morte?', ops: ['Lutero Simango', 'Sande Carmona', 'Albano Carige', 'Chivavice Muchangage'], r: 2 },
+  { id: 188, cat: 'politica', icon: '🏛️', p: 'Quem é o actual líder da RENAMO após Afonso Dhlakama?', ops: ['Raul Domingos', 'Lutero Simango', 'André Matsangaissa', 'Ossufo Momade'], r: 3 },
+  { id: 189, cat: 'politica', icon: '🏛️', p: 'Qual foi o partido de Venâncio Mondlane nas eleições de 2024?', ops: ['MDM', 'RENAMO', 'FRELIMO', 'PODEMOS'], r: 3 },
+  { id: 190, cat: 'politica', icon: '🏛️', p: 'Qual partido governou a cidade da Beira durante mais tempo?', ops: ['FRELIMO', 'RENAMO', 'MDM', 'PODEMOS'], r: 2 },
+  { id: 191, cat: 'politica', icon: '🏛️', p: 'Porque é que todos os partidos querem governar a cidade da Beira?', ops: ['Por causa da praia', 'Por causa do Porto da Beira', 'Por ser a segunda maior cidade', 'Por causa da universidade'], r: 1 },
+  { id: 192, cat: 'politica', icon: '🏛️', p: 'Qual jogador beirense da Munhava jogou para o Atlético de Madrid?', ops: ['Dário Monteiro', 'Domingos Paciência', 'Renildo Mandava', 'Tico-Tico'], r: 2 },
+];
+
+const fasesConfig = {
+  1: {
+    nome: 'Vida do Bairro',
+    icon: '🏘️',
+    categorias: ['bairro', 'escola', 'chapa', 'maes', 'futebol'],
+    desbloqueio: 0.80
+  },
+  2: {
+    nome: 'Aquecimento',
+    icon: '🧠',
+    categorias: ['popular', 'logica'],
+    desbloqueio: 0.80
+  },
+  3: {
+    nome: 'Identidade',
+    icon: '📜',
+    categorias: ['proverbios', 'cultura', 'musica'],
+    desbloqueio: 0.95
+  },
+  4: {
+    nome: 'Actualidade',
+    icon: '📰',
+    categorias: ['eventos'],
+    desbloqueio: 0.95
+  },
+  5: {
+    nome: 'Sabe Tudo',
+    icon: '🏆',
+    categorias: ['historia', 'politica'],
+    desbloqueio: 1.00
+  }
+};
+
+let faseActual = 1;
+let fasesDesbloqueadas = [1];
+let perguntasFase = [];
+let perguntasUsadasIds = [];
+let perguntaIndex = 0;
+let totalAcertosFase = 0;
+let totalPerguntasFase = 0;
+let vidas = 3;
+let pontos = 0;
+
+function getPerguntasDaFase(fase) {
+  const cats = fasesConfig[fase].categorias;
+  return perguntas.filter(p => cats.includes(p.cat));
+}
+
+function seleccionarFase(fase) {
+  if (!fasesDesbloqueadas.includes(fase)) return;
+  faseActual = fase;
+  const todasDaFase = getPerguntasDaFase(fase);
+  perguntasFase = [...todasDaFase].sort(() => Math.random() - 0.5);
+  totalPerguntasFase = perguntasFase.length;
+  perguntasUsadasIds = [];
+  perguntaIndex = 0;
+  totalAcertosFase = 0;
+  vidas = 3;
+  pontos = 0;
+  document.getElementById('inicio').style.display = 'none';
+  document.getElementById('resultado').style.display = 'none';
+  document.getElementById('jogo').style.display = 'block';
+  iniciarAmbiente();
+  mostrarPergunta();
+}
+
+function mostrarPergunta() {
+  const p = perguntasFase[perguntaIndex];
+  const letras = ['A', 'B', 'C', 'D'];
+  const config = fasesConfig[faseActual];
+
+  document.getElementById('hud-cat').textContent = config.icon + ' ' + config.nome;
+  document.getElementById('hud-score').textContent = pontos + ' pts';
+  document.getElementById('hud-num').textContent = (perguntaIndex + 1) + '/' + totalPerguntasFase;
+  document.getElementById('barra-fill').style.width = ((perguntaIndex / totalPerguntasFase) * 100) + '%';
+  document.getElementById('perg-cat').textContent = p.icon + ' ' + p.cat.toUpperCase();
+  document.getElementById('perg-texto').textContent = p.p;
+
+  const opcoes = document.getElementById('opcoes');
+  opcoes.innerHTML = '';
+  p.ops.forEach((op, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opcao';
+    btn.innerHTML = `<span class="opcao-letra">${letras[i]}</span>${op}`;
+    btn.onclick = () => responder(i, p.r);
+    opcoes.appendChild(btn);
+  });
+
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('btn-proxima').style.display = 'none';
+  actualizarVidas();
+}
+
+function actualizarVidas() {
+  const display = document.getElementById('vidas-display');
+  let html = '';
+  for (let i = 0; i < 3; i++) {
+    html += i < vidas ? '❤️' : '🖤';
+  }
+  display.innerHTML = html;
+}
+
+// ============================================
+// SONS DO JOGO (gerados via Web Audio API, sem ficheiros externos)
+// ============================================
+let audioCtx = null;
+let somActivo = true;
+let ambienteActivo = true;
+let ambienteNodes = [];
+let ambienteTimer = null;
+
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioCtx;
+}
+
+function criarGotaChuva() {
+  if (!ambienteActivo) return;
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    filter.type = 'bandpass';
+    filter.frequency.value = 2000 + Math.random() * 3500;
+    filter.Q.value = 3;
+
+    osc.type = 'sine';
+    osc.frequency.value = filter.frequency.value;
+
+    const agora = ctx.currentTime;
+    gain.gain.setValueAtTime(0, agora);
+    gain.gain.linearRampToValueAtTime(0.02 + Math.random() * 0.015, agora + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.0001, agora + 0.08 + Math.random() * 0.05);
+
+    osc.start(agora);
+    osc.stop(agora + 0.2);
+  } catch (e) {}
+}
+
+function agendarProximaGota() {
+  if (!ambienteActivo) return;
+  const delay = 60 + Math.random() * 180;
+  ambienteTimer = setTimeout(() => {
+    criarGotaChuva();
+    agendarProximaGota();
+  }, delay);
+}
+
+function criarAguaCorrente() {
+  if (!ambienteActivo) return null;
+  try {
+    const ctx = getAudioContext();
+    const bufferSize = 2 * ctx.sampleRate;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = buffer.getChannelData(0);
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      lastOut = (lastOut + 0.04 * white) / 1.04;
+      output[i] = lastOut * 4.5;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 900;
+    filter.Q.value = 0.6;
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0.018;
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    noise.start();
+
+    return { noise, gain };
+  } catch (e) {
+    return null;
+  }
+}
+
+let ventoNode = null;
+
+function iniciarAmbiente() {
+  if (ventoNode) return;
+  ventoNode = criarAguaCorrente();
+  agendarProximaGota();
+}
+
+function pararAmbiente() {
+  ambienteActivo = false;
+  if (ambienteTimer) clearTimeout(ambienteTimer);
+  if (ventoNode) {
+    try {
+      ventoNode.noise.stop();
+    } catch (e) {}
+    ventoNode = null;
+  }
+}
+
+function alternarAmbiente() {
+  ambienteActivo = !ambienteActivo;
+  const btn = document.getElementById('btn-ambiente');
+  if (ambienteActivo) {
+    iniciarAmbiente();
+    if (btn) btn.textContent = '🌧️';
+  } else {
+    pararAmbiente();
+    if (btn) btn.textContent = '🌧️̶';
+  }
+}
+
+function tocarSom(tipo) {
+  if (!somActivo) return;
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (tipo === 'certo') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+      osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08);
+      osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.16);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.35);
+    } else if (tipo === 'errado') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, ctx.currentTime);
+      osc.frequency.setValueAtTime(120, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+    } else if (tipo === 'clique') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    } else if (tipo === 'desbloqueio') {
+      osc.type = 'sine';
+      const notas = [523.25, 659.25, 783.99, 1046.5];
+      notas.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.12);
+        g.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.12);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.25);
+        o.start(ctx.currentTime + i * 0.12);
+        o.stop(ctx.currentTime + i * 0.12 + 0.25);
+      });
+    } else if (tipo === 'derrota') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.5);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.5);
+    }
+  } catch (e) {
+    console.log('Som não disponível:', e);
+  }
+}
+
+function alternarSom() {
+  somActivo = !somActivo;
+  const btn = document.getElementById('btn-som');
+  if (btn) btn.textContent = somActivo ? '🔊' : '🔇';
+}
+
+function responder(escolha, certa) {
+  const btns = document.querySelectorAll('.opcao');
+  btns.forEach(b => b.disabled = true);
+
+  const feedback = document.getElementById('feedback');
+  const btnProxima = document.getElementById('btn-proxima');
+  const isUltima = perguntaIndex >= perguntasFase.length - 1;
+
+  if (escolha === certa) {
+    btns[escolha].classList.add('correcta');
+    pontos += 100;
+    totalAcertosFase++;
+    feedback.className = 'feedback correcta';
+    feedback.innerHTML = '✅ <strong>Correcto!</strong> +100 pontos';
+    tocarSom('certo');
+  } else {
+    btns[escolha].classList.add('errada');
+    btns[certa].classList.add('correcta');
+    vidas--;
+    actualizarVidas();
+    feedback.className = 'feedback errada';
+    feedback.innerHTML = '❌ <strong>Errado!</strong> A resposta era: <strong>' + perguntasFase[perguntaIndex].ops[certa] + '</strong>';
+    tocarSom('errado');
+
+    if (vidas <= 0) {
+      feedback.innerHTML += '<br><br>💔 <strong>Perdeste todas as vidas! A fase termina aqui.</strong>';
+      feedback.style.display = 'block';
+      document.getElementById('hud-score').textContent = pontos + ' pts';
+      tocarSom('derrota');
+      setTimeout(() => terminarFase(), 2500);
+      return;
+    }
+  }
+
+  feedback.style.display = 'block';
+  document.getElementById('hud-score').textContent = pontos + ' pts';
+  btnProxima.textContent = isUltima ? '📊 Ver Resultado' : 'Próxima →';
+  btnProxima.style.display = 'block';
+}
+
+function proximaPergunta() {
+  tocarSom('clique');
+  perguntaIndex++;
+  if (perguntaIndex >= perguntasFase.length) {
+    terminarFase();
+  } else {
+    mostrarPergunta();
+  }
+}
+
+function terminarFase() {
+  document.getElementById('jogo').style.display = 'none';
+  const res = document.getElementById('resultado');
+  res.style.display = 'flex';
+
+  const config = fasesConfig[faseActual];
+  const pct = totalAcertosFase / totalPerguntasFase;
+  const pctDisplay = Math.round(pct * 100);
+  const passou = pct >= config.desbloqueio;
+  const verTodas = (perguntaIndex + (vidas > 0 ? 1 : 0)) >= totalPerguntasFase;
+
+  let emoji, titulo, msg;
+  let desbloqueouProxima = false;
+
+  if (passou && verTodas) {
+    if (faseActual < 5 && !fasesDesbloqueadas.includes(faseActual + 1)) {
+      fasesDesbloqueadas.push(faseActual + 1);
+      desbloqueouProxima = true;
+      desbloquearBotaoFase(faseActual + 1);
+      tocarSom('desbloqueio');
+    }
+  }
+
+  if (pctDisplay === 100) {
+    emoji = '🏆'; titulo = 'Perfeição!';
+    msg = `100% de acertos em todas as ${totalPerguntasFase} perguntas da fase "${config.nome}"!`;
+  } else if (passou && verTodas) {
+    emoji = '🌟'; titulo = 'Fase Completa!';
+    msg = `Atingiste ${pctDisplay}% de acertos — passaste a fase "${config.nome}"!`;
+  } else if (!verTodas) {
+    emoji = '💔'; titulo = 'Vidas Esgotadas';
+    msg = `Perdeste as vidas antes de terminar todas as perguntas da fase "${config.nome}". Tenta novamente!`;
+  } else {
+    emoji = '💪'; titulo = 'Quase lá!';
+    const necessario = Math.round(config.desbloqueio * 100);
+    msg = `Tiveste ${pctDisplay}% de acertos. Precisas de ${necessario}% para desbloquear a próxima fase. Tenta novamente!`;
+  }
+
+  if (desbloqueouProxima && faseActual < 5) {
+    msg += ` 🔓 Desbloqueaste a Fase ${faseActual + 1}: ${fasesConfig[faseActual + 1].nome}!`;
+  }
+
+  if (faseActual === 5 && passou && verTodas) {
+    msg += ' 🇲🇿 COMPLETASTE O QUAL A SENA MZ! Parabéns, és uma lenda!';
+  }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-titulo').textContent = titulo;
+  document.getElementById('res-score').textContent = pontos;
+  document.getElementById('res-msg').textContent = msg;
+  document.getElementById('res-certas').textContent = totalAcertosFase;
+  document.getElementById('res-erradas').textContent = totalPerguntasFase - totalAcertosFase;
+  document.getElementById('res-total').textContent = totalPerguntasFase;
+}
+
+function desbloquearBotaoFase(fase) {
+  const btn = document.getElementById('fase-' + fase + '-btn');
+  if (btn) {
+    btn.disabled = false;
+    btn.style.background = '#0d2b1a';
+    btn.style.border = '2px solid #007A4D';
+    btn.style.color = '#F8F6F0';
+    btn.style.cursor = 'pointer';
+    const lockIcon = btn.querySelector('.lock-icon');
+    if (lockIcon) lockIcon.textContent = '🔓';
+    const titulo = btn.querySelector('.fase-titulo');
+    if (titulo) titulo.style.color = '#007A4D';
+    const subtitulo = btn.querySelector('.fase-subtitulo');
+    if (subtitulo) subtitulo.style.color = '#F8F6F0';
+  }
+}
+
+function jogarNovamente() {
+  seleccionarFase(faseActual);
+}
+
+function irMenu() {
+  document.getElementById('resultado').style.display = 'none';
+  document.getElementById('jogo').style.display = 'none';
+  document.getElementById('inicio').style.display = 'flex';
+}
+</script>
+<div id="pwa-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#007A4D; color:white; padding:1rem; text-align:center; z-index:999; box-shadow:0 -4px 20px rgba(0,0,0,0.3);">
+  <p style="font-size:0.85rem; margin-bottom:0.5rem;">📲 Instala o <strong>Sabe Moçambique</strong> no teu telemóvel!</p>
+  <div style="display:flex; gap:0.5rem; justify-content:center;">
+    <button id="pwa-install-btn" style="background:white; color:#007A4D; border:none; padding:0.5rem 1.2rem; border-radius:50px; font-weight:700; font-size:0.8rem; cursor:pointer;">Instalar</button>
+    <button onclick="document.getElementById('pwa-banner').style.display='none'" style="background:transparent; color:white; border:1px solid white; padding:0.5rem 1.2rem; border-radius:50px; font-size:0.8rem; cursor:pointer;">Agora não</button>
+  </div>
+</div>
+
+<script>
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('pwa-banner').style.display = 'block';
+});
+
+document.getElementById('pwa-install-btn').addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('pwa-banner').style.display = 'none';
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwa-banner').style.display = 'none';
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
